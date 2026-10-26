@@ -1,0 +1,2744 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05060b">
+<title>Aunivo</title>
+
+<style>
+/* =====================================================
+   AUNIVO — DESIGN SYSTEM
+   ===================================================== */
+
+:root {
+  --bg: #05060b;
+  --panel: #0c1020;
+  --text: #f4f6ff;
+  --muted: #8994af;
+  --blue: #628cff;
+  --cyan: #6ce8ff;
+  --purple: #a17aff;
+  --line: rgba(157,177,255,.14);
+  --ease: cubic-bezier(.22,1,.36,1);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  overflow: hidden;
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+  border: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 4px;
+}
+
+#app {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 500px;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 50% 38%, #12182c 0%, transparent 53%),
+    #05060b;
+}
+
+.ambient {
+  position: absolute;
+  z-index: -3;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambient::before,
+.ambient::after {
+  content: "";
+  position: absolute;
+  width: 75vw;
+  height: 75vw;
+  min-width: 300px;
+  min-height: 300px;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: .12;
+  animation: ambientMove 18s ease-in-out infinite alternate;
+}
+
+.ambient::before {
+  top: 5%;
+  left: -35%;
+  background: #315dff;
+}
+
+.ambient::after {
+  bottom: 0;
+  right: -35%;
+  background: #8139ff;
+  animation-delay: -8s;
+}
+
+.grid-bg {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  pointer-events: none;
+  opacity: .12;
+  background-image:
+    linear-gradient(#819fff0b 1px, transparent 1px),
+    linear-gradient(90deg, #819fff0b 1px, transparent 1px);
+  background-size: 38px 38px;
+  mask-image: radial-gradient(ellipse at center, #000, transparent 80%);
+}
+
+@keyframes ambientMove {
+  from { transform: translate(-2%, -2%) scale(.94); }
+  to { transform: translate(5%, 5%) scale(1.1); }
+}
+
+/* =====================================================
+   SCREEN SYSTEM
+   ===================================================== */
+
+.screen {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding:
+    max(24px, env(safe-area-inset-top))
+    22px
+    max(24px, env(safe-area-inset-bottom));
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(13px) scale(.99);
+  transition:
+    opacity .38s ease,
+    transform .48s var(--ease),
+    visibility .38s;
+}
+
+.screen.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.screen.entering > * {
+  animation: contentIn .65s var(--ease) both;
+}
+
+.screen.entering > *:nth-child(2) { animation-delay: .06s; }
+.screen.entering > *:nth-child(3) { animation-delay: .12s; }
+.screen.entering > *:nth-child(4) { animation-delay: .18s; }
+
+@keyframes contentIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =====================================================
+   TYPOGRAPHY AND BUTTONS
+   ===================================================== */
+
+.eyebrow {
+  color: #8ba8ff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.heading {
+  max-width: 460px;
+  margin: 14px 0 0;
+  font-size: clamp(28px, 7vw, 38px);
+  line-height: 1.17;
+  font-weight: 760;
+  letter-spacing: -1.2px;
+  text-align: center;
+}
+
+.gradient-text {
+  color: transparent;
+  background: linear-gradient(100deg, #8ec4ff, #c0a1ff 55%, #74eaff);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.description {
+  max-width: 340px;
+  margin: 14px auto 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.button-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  width: 100%;
+}
+
+.primary-btn,
+.secondary-btn {
+  width: 100%;
+  min-height: 53px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 650;
+  transition:
+    transform .22s var(--ease),
+    box-shadow .25s ease,
+    background .25s ease;
+}
+
+.primary-btn {
+  color: #fff;
+  background: linear-gradient(110deg, #477bff, #7957ed);
+  box-shadow: 0 9px 28px #4d6cff2c, inset 0 1px #ffffff30;
+}
+
+.primary-btn:active,
+.secondary-btn:active {
+  transform: scale(.975);
+}
+
+.primary-btn:hover {
+  box-shadow: 0 10px 35px #597dff4a, inset 0 1px #ffffff40;
+}
+
+.secondary-btn {
+  background: rgba(19,25,44,.7);
+  border: 1px solid var(--line);
+  color: #d9e2ff;
+}
+
+.btn-arrow {
+  font-size: 19px;
+  transition: transform .25s var(--ease);
+}
+
+.primary-btn:hover .btn-arrow {
+  transform: translateX(3px);
+}
+
+/* =====================================================
+   REUSABLE ORB — LAYERED GLASS AND LIGHT
+   ===================================================== */
+
+.orb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  isolation: isolate;
+  border-radius: 50%;
+}
+
+.orb::before {
+  content: "";
+  position: absolute;
+  inset: 3%;
+  border-radius: 50%;
+  border: 1px solid #8baaff25;
+  box-shadow: inset 0 0 30px #668cff08;
+  animation: orbitRotate 24s linear infinite;
+}
+
+.orb::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  border: 1px dashed #b28cff2c;
+  animation: orbitRotate 30s linear infinite reverse;
+}
+
+.orb-halo {
+  position: absolute;
+  inset: 14%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #4e78ff25, transparent 70%);
+  filter: blur(12px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+
+.orb-core {
+  position: relative;
+  z-index: 2;
+  width: 59%;
+  height: 59%;
+  border-radius: 50%;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 31% 23%, #d0eaff 0%, transparent 12%),
+    radial-gradient(circle at 35% 30%, #7bbdff 0%, #5b75f7 29%, #623bc3 60%, #151932 100%);
+  box-shadow:
+    0 0 26px #568cff4b,
+    0 0 65px #7753ff29,
+    0 0 105px #4d8cff15,
+    inset -13px -17px 28px #070b2099,
+    inset 5px 7px 18px #ffffff45;
+  animation: coreBreath 5s ease-in-out infinite;
+}
+
+.orb-core::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    #c3edff8a,
+    transparent 22%,
+    #a78aff7a,
+    transparent 54%,
+    #6dbaff83,
+    transparent 78%
+  );
+  filter: blur(9px);
+  animation: coreRotate 9s linear infinite;
+}
+
+.orb-core::after {
+  content: "";
+  position: absolute;
+  top: 13%;
+  left: 19%;
+  width: 44%;
+  height: 20%;
+  border-radius: 50%;
+  transform: rotate(-35deg);
+  background: linear-gradient(90deg, transparent, #fff5, transparent);
+  filter: blur(5px);
+}
+
+.orb-point {
+  position: absolute;
+  z-index: 3;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #a7edff;
+  box-shadow: 0 0 12px #79dfff;
+}
+
+.orb-point.p1 {
+  top: 18%;
+  right: 18%;
+}
+
+.orb-point.p2 {
+  left: 15%;
+  bottom: 28%;
+  width: 4px;
+  height: 4px;
+  background: #d2a5ff;
+  box-shadow: 0 0 12px #b28aff;
+}
+
+@keyframes orbitRotate {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes coreRotate {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes coreBreath {
+  0%, 100% { transform: scale(.97); }
+  50% { transform: scale(1.02); }
+}
+
+.orb-button {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: transparent;
+  border-radius: 50%;
+  transition: transform .3s var(--ease);
+}
+
+.orb-button:active {
+  transform: scale(.96);
+}
+
+/* =====================================================
+   SPLASH SCREEN
+   ===================================================== */
+
+#welcome {
+  justify-content: center;
+  padding: 0 20px;
+  overflow: hidden;
+  background: #05060b;
+}
+
+.splash {
+  min-height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.splash-logo {
+  opacity: 0;
+  color: #f7f8ff;
+  font-size: clamp(32px, 8vw, 44px);
+  font-weight: 850;
+  letter-spacing: 12px;
+  padding-left: 12px;
+  text-shadow: 0 0 35px #8baaff2e;
+  animation: logoReveal 1.5s var(--ease) .2s forwards;
+}
+
+.splash-subtitle {
+  margin-top: 13px;
+  color: #7381a0;
+  font-size: 9px;
+  letter-spacing: 4px;
+  opacity: 0;
+  animation: fadeIn .8s ease 1s forwards;
+}
+
+.splash-orb {
+  width: 188px;
+  height: 188px;
+  margin-top: 45px;
+  padding: 0;
+  background: transparent;
+  opacity: 0;
+  transform: scale(.4);
+  animation: splashOrbReveal 1.2s var(--ease) 1.45s forwards;
+}
+
+.splash-orb:active {
+  transform: scale(.95);
+}
+
+.splash-hint {
+  margin-top: 38px;
+  color: #7786a6;
+  font-size: 10px;
+  letter-spacing: 2.4px;
+  opacity: 0;
+  animation: fadeIn .8s ease 2.1s forwards;
+}
+
+@keyframes logoReveal {
+  0% { opacity: 0; filter: blur(10px); letter-spacing: 22px; }
+  100% { opacity: 1; filter: blur(0); letter-spacing: 12px; }
+}
+
+@keyframes splashOrbReveal {
+  0% { opacity: 0; transform: scale(.4); filter: blur(10px); }
+  70% { opacity: 1; transform: scale(1.06); filter: blur(0); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* =====================================================
+   SETUP SCREEN
+   ===================================================== */
+
+#setup {
+  justify-content: center;
+}
+
+.setup-card {
+  width: 100%;
+  max-width: 410px;
+  padding: 28px 23px 25px;
+  border-radius: 27px;
+  border: 1px solid var(--line);
+  background: linear-gradient(150deg, #151b2dcc, #090c16e8);
+  box-shadow: 0 25px 90px #0004;
+  backdrop-filter: blur(20px);
+}
+
+.brand-mini {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-bottom: 27px;
+  color: #b7c6e8;
+  font-size: 10px;
+  letter-spacing: 3px;
+}
+
+.brand-mini-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 13px var(--cyan);
+}
+
+.form-field {
+  display: block;
+  margin-top: 20px;
+}
+
+.form-label {
+  display: block;
+  margin: 0 0 9px 4px;
+  color: #a7b1cb;
+  font-size: 11px;
+}
+
+.text-input {
+  width: 100%;
+  height: 54px;
+  padding: 0 16px;
+  border: 1px solid #8ca4e829;
+  border-radius: 15px;
+  outline: none;
+  background: #101629;
+  color: #f5f7ff;
+  transition: border-color .25s, box-shadow .25s;
+}
+
+.text-input::placeholder {
+  color: #64718c;
+}
+
+.text-input:focus {
+  border-color: #7799ff99;
+  box-shadow: 0 0 0 4px #658aff12;
+}
+
+.setup-actions {
+  margin-top: 26px;
+}
+
+/* =====================================================
+   GREETING SCREEN
+   ===================================================== */
+
+#greeting {
+  justify-content: center;
+}
+
+.greeting-orb {
+  width: 118px;
+  height: 118px;
+  margin-bottom: 30px;
+  animation: gentleFloat 5s ease-in-out infinite;
+}
+
+.greeting-orb .orb-core {
+  width: 61%;
+  height: 61%;
+}
+
+.greeting-message {
+  min-height: 126px;
+  max-width: 360px;
+  margin-top: 18px;
+  color: #dce5ff;
+  font-size: 16px;
+  line-height: 1.9;
+  text-align: center;
+}
+
+.greeting-actions {
+  width: 100%;
+  max-width: 345px;
+  margin-top: 22px;
+}
+
+.typing-cursor::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 16px;
+  margin-left: 4px;
+  background: #9bbaff;
+  vertical-align: -2px;
+  animation: blink .8s steps(2) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* =====================================================
+   FEATURES WALKTHROUGH
+   ===================================================== */
+
+#features {
+  justify-content: center;
+  padding-top: max(27px, env(safe-area-inset-top));
+  padding-bottom: max(26px, env(safe-area-inset-bottom));
+}
+
+.feature-top,
+.feature-progress,
+.feature-copy,
+.feature-bottom {
+  width: 100%;
+  max-width: 390px;
+}
+
+.feature-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.feature-counter {
+  color: #8997b6;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.feature-progress {
+  height: 3px;
+  margin-top: 17px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #202740;
+}
+
+.feature-progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #608dff, #b18aff, #6de8ff);
+  transition: width .6s var(--ease);
+}
+
+.feature-visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(58vw, 230px);
+  height: min(58vw, 230px);
+  flex-shrink: 0;
+  margin-top: 17px;
+}
+
+.feature-visual::before,
+.feature-visual::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid #90aaff21;
+}
+
+.feature-visual::before {
+  inset: 8%;
+  animation: orbitRotate 22s linear infinite;
+}
+
+.feature-visual::after {
+  inset: 0;
+  border-style: dashed;
+  border-color: #b18aff27;
+  animation: orbitRotate 29s linear infinite reverse;
+}
+
+.feature-icon-shell {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 106px;
+  height: 106px;
+  border-radius: 32px;
+  border: 1px solid #9db6ff30;
+  background: linear-gradient(145deg, #1d2d51, #17152f);
+  box-shadow: 0 0 55px #5c80ff20, inset 0 1px #ffffff1b;
+  color: #c5dcff;
+  animation: iconFloat 4s ease-in-out infinite;
+}
+
+.feature-icon-shell svg {
+  width: 48px;
+  height: 48px;
+  overflow: visible;
+}
+
+.feature-icon-shell svg path,
+.feature-icon-shell svg circle,
+.feature-icon-shell svg rect,
+.feature-icon-shell svg line,
+.feature-icon-shell svg polyline,
+.feature-icon-shell svg ellipse {
+  vector-effect: non-scaling-stroke;
+}
+
+.feature-visual .orbit-point {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #83dfff;
+  box-shadow: 0 0 15px #67cfff;
+}
+
+.feature-visual .p1 {
+  top: 19%;
+  right: 19%;
+}
+
+.feature-visual .p2 {
+  left: 16%;
+  bottom: 25%;
+  width: 5px;
+  height: 5px;
+  background: #c09aff;
+  box-shadow: 0 0 13px #b18aff;
+}
+
+.feature-copy {
+  text-align: center;
+  margin-top: 7px;
+  animation: featureCopyIn .5s var(--ease) both;
+}
+
+.feature-copy .heading {
+  font-size: clamp(27px, 7vw, 34px);
+  margin-top: 11px;
+}
+
+.feature-copy .description {
+  min-height: 77px;
+  font-size: 13px;
+}
+
+.feature-bottom {
+  margin-top: 20px;
+}
+
+.feature-bottom .button-stack {
+  gap: 10px;
+}
+
+.feature-replay {
+  min-height: 48px;
+}
+
+.feature-skip {
+  margin-top: 12px;
+  padding: 9px 15px;
+  color: #72809e;
+  background: transparent;
+  font-size: 11px;
+}
+
+@keyframes iconFloat {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-7px) rotate(2deg); }
+}
+
+@keyframes featureCopyIn {
+  from { opacity: 0; transform: translateY(12px); filter: blur(3px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* =====================================================
+   HOME — CENTERED HEADER
+   ===================================================== */
+
+#home {
+  padding: 0;
+  overflow: hidden;
+}
+
+.home-header {
+  position: absolute;
+  z-index: 3;
+  top: max(27px, env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.home-brand-name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: #f5f7ff;
+  text-shadow: 0 0 30px #91aaff1b;
+}
+
+.home-brand-subtitle {
+  margin-top: 7px;
+  color: #8290ae;
+  font-size: 9px;
+  letter-spacing: 3px;
+}
+
+.home-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  color: #7c8aa8;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+}
+
+.status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #67738b;
+  transition: background .3s, box-shadow .3s;
+}
+
+.home-status.ready .status-dot {
+  background: #70e7bd;
+  box-shadow: 0 0 12px #70e7bd99;
+}
+
+.home-center {
+  position: absolute;
+  inset: 118px 0 111px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 22px;
+}
+
+.home-orb {
+  position: relative;
+  width: min(72vw, 292px);
+  height: min(72vw, 292px);
+  max-height: 34vh;
+  max-width: 292px;
+  min-width: 205px;
+  min-height: 205px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: transparent;
+  transition: transform .5s var(--ease);
+}
+
+.home-orb .orb-core {
+  background:
+    radial-gradient(circle at 32% 25%, #bdc6d6 0%, transparent 13%),
+    radial-gradient(circle at 35% 30%, #788398 0%, #495264 34%, #2c3241 65%, #131722 100%);
+  box-shadow:
+    0 0 24px #9aa9ca0b,
+    inset -13px -17px 28px #03040a99,
+    inset 5px 7px 18px #ffffff24;
+  animation: none;
+  transition: background .7s, box-shadow .7s, filter .7s;
+}
+
+.home-orb .orb-core::before {
+  opacity: .15;
+  animation: none;
+}
+
+.home-orb .orb::before,
+.home-orb .orb::after {
+  border-color: #9eabc51a;
+  animation: none;
+}
+
+.home-orb .orb-halo {
+  opacity: .2;
+  background: radial-gradient(circle, #9ba8c31a, transparent 70%);
+}
+
+.home-orb.active .orb-core {
+  background:
+    radial-gradient(circle at 31% 23%, #d0efff 0%, transparent 12%),
+    radial-gradient(circle at 35% 30%, #7bbdff 0%, #5b75f7 29%, #623bc3 60%, #151932 100%);
+  box-shadow:
+    0 0 30px #568cff4b,
+    0 0 70px #7753ff35,
+    0 0 115px #4d8cff1c,
+    inset -13px -17px 28px #070b2099,
+    inset 5px 7px 18px #ffffff45;
+}
+
+.home-orb.active .orb-core::before {
+  opacity: 1;
+  animation: coreRotate 8s linear infinite;
+}
+
+.home-orb.active .orb-halo {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.home-orb.active .orb::before {
+  border-color: #8baaff35;
+  animation: orbitRotate 17s linear infinite;
+}
+
+.home-orb.active .orb::after {
+  border-color: #b28aff42;
+  animation: orbitRotate 24s linear infinite reverse;
+}
+
+.home-orb.listening .orb-core {
+  animation: listenPulse 1.6s ease-in-out infinite;
+}
+
+.home-greeting {
+  margin-top: 24px;
+  color: #edf1ff;
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -.4px;
+  text-align: center;
+}
+
+.home-instruction {
+  max-width: 300px;
+  margin-top: 9px;
+  color: #8591ac;
+  font-size: 12px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.voice-state {
+  min-height: 17px;
+  margin-top: 12px;
+  color: #91a3ca;
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  text-align: center;
+}
+
+.home-chat-btn {
+  min-height: 44px;
+  margin-top: 16px;
+  padding: 0 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 15px;
+  color: #d4def9;
+  background: #12192acc;
+  border: 1px solid #9bafff20;
+  font-size: 11px;
+  transition: transform .2s, background .2s;
+}
+
+.home-chat-btn:active {
+  transform: scale(.97);
+  background: #1c2743;
+}
+
+.chat-glyph {
+  color: #a5bcff;
+  font-size: 16px;
+}
+
+@keyframes listenPulse {
+  0%, 100% { transform: scale(.96); filter: brightness(1); }
+  50% { transform: scale(1.04); filter: brightness(1.25); }
+}
+
+/* =====================================================
+   NAVIGATION BAR — BUTTONS ARE PLACEHOLDERS
+   ===================================================== */
+
+.bottom-nav {
+  position: absolute;
+  z-index: 10;
+  left: 15px;
+  right: 15px;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  min-height: 75px;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid #9aaeff20;
+  border-radius: 25px;
+  background: linear-gradient(145deg, #171d32f2, #0a0d18f5);
+  box-shadow: 0 12px 45px #0005, inset 0 1px #ffffff0b;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.nav-button {
+  height: 58px;
+  min-width: 0;
+  padding: 5px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border-radius: 17px;
+  color: #7784a0;
+  background: transparent;
+  transition: color .25s, background .25s, transform .25s var(--ease);
+}
+
+.nav-button:active {
+  transform: scale(.94);
+  background: #ffffff08;
+}
+
+.nav-icon {
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  font-size: 21px;
+  line-height: 1;
+}
+
+.nav-label {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 9px;
+}
+
+.center-nav {
+  color: #e3eaff;
+}
+
+.center-nav .nav-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 11px;
+  color: white;
+  font-size: 16px;
+  background: linear-gradient(135deg, #4d7fff, #8456eb);
+  box-shadow: 0 3px 17px #5c70ff35;
+}
+
+@media (min-width: 600px) {
+  .bottom-nav {
+    left: 50%;
+    right: auto;
+    width: min(430px, calc(100% - 40px));
+    transform: translateX(-50%);
+    bottom: 22px;
+  }
+
+  .home-orb {
+    width: 292px;
+    height: 292px;
+    max-height: none;
+  }
+}
+
+/* =====================================================
+   TEXT CHAT
+   ===================================================== */
+
+#chat {
+  padding-top: max(25px, env(safe-area-inset-top));
+}
+
+.chat-header {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.back-btn {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: #141a2c;
+  border: 1px solid var(--line);
+  color: #dce5ff;
+  font-size: 21px;
+}
+
+.chat-heading {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.chat-subheading {
+  margin-top: 4px;
+  color: #7e8ba8;
+  font-size: 9px;
+  letter-spacing: 1.4px;
+}
+
+.chat-messages {
+  width: 100%;
+  max-width: 480px;
+  flex: 1;
+  min-height: 100px;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.chat-message {
+  max-width: 86%;
+  padding: 13px 15px;
+  border-radius: 17px;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  animation: messageIn .35s var(--ease) both;
+}
+
+.chat-message.assistant {
+  align-self: flex-start;
+  color: #d9e2f9;
+  background: #141b2d;
+  border: 1px solid #8ca6ff12;
+  border-bottom-left-radius: 5px;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+  color: white;
+  background: linear-gradient(125deg, #426ee7, #674cce);
+  border-bottom-right-radius: 5px;
+}
+
+@keyframes messageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-form {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  gap: 9px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+
+.chat-input {
+  min-width: 0;
+  flex: 1;
+  height: 52px;
+  padding: 0 15px;
+  border-radius: 15px;
+  border: 1px solid var(--line);
+  outline: none;
+  background: #111729;
+  color: #fff;
+}
+
+.send-btn {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #4e7eff, #8055e7);
+  font-size: 20px;
+}
+
+/* =====================================================
+   SETTINGS SCREEN
+   ===================================================== */
+
+#settings {
+  justify-content: flex-start;
+  padding-top: max(25px, env(safe-area-inset-top));
+}
+
+.settings-wrap {
+  width: 100%;
+  max-width: 480px;
+}
+
+.settings-title {
+  margin: 18px 0 8px;
+  font-size: 27px;
+  font-weight: 760;
+  letter-spacing: -.7px;
+}
+
+.settings-note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 0 0 20px;
+}
+
+.settings-card {
+  padding: 18px;
+  margin: 14px 0;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: linear-gradient(150deg, #151b2dcc, #090c16e8);
+}
+
+.settings-card .form-field { margin-top: 14px; }
+.settings-card .form-field:first-child { margin-top: 0; }
+.settings-card .button-stack { margin-top: 16px; }
+.settings-danger {
+  color: #ffc1ca;
+  border-color: #ff849522;
+  background: #3b1524aa;
+}
+
+/* =====================================================
+   TOAST AND RESPONSIVE ADJUSTMENTS
+   ===================================================== */
+
+.toast {
+  position: absolute;
+  z-index: 30;
+  top: max(20px, env(safe-area-inset-top));
+  left: 50%;
+  width: max-content;
+  max-width: calc(100% - 38px);
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid #7a94ff25;
+  background: #151d31f5;
+  color: #dce6ff;
+  box-shadow: 0 10px 35px #0005;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -10px);
+  transition: opacity .25s, transform .3s var(--ease);
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (max-height: 700px) {
+  .greeting-orb {
+    width: 88px;
+    height: 88px;
+    margin-bottom: 17px;
+  }
+
+  .greeting-message {
+    min-height: 100px;
+    font-size: 14px;
+  }
+
+  .greeting-actions {
+    margin-top: 14px;
+  }
+
+  .feature-visual {
+    width: 155px;
+    height: 155px;
+    margin-top: 10px;
+  }
+
+  .feature-icon-shell {
+    width: 80px;
+    height: 80px;
+    border-radius: 25px;
+  }
+
+  .feature-icon-shell svg {
+    width: 38px;
+    height: 38px;
+  }
+
+  .feature-copy .description {
+    min-height: 56px;
+    margin-top: 8px;
+  }
+
+  .feature-bottom {
+    margin-top: 12px;
+  }
+
+  .home-center {
+    top: 100px;
+  }
+
+  .home-greeting {
+    margin-top: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="app">
+
+  <div class="ambient"></div>
+  <div class="grid-bg"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- 1. SPLASH -->
+
+  <section class="screen active" id="welcome">
+    <div class="splash">
+      <div class="splash-logo">AUNIVO</div>
+      <div class="splash-subtitle">YOUR PERSONAL ASSISTANT</div>
+
+      <button class="splash-orb" id="splashOrb" aria-label="Boshlash">
+        <div class="orb">
+          <div class="orb-halo"></div>
+          <div class="orb-core"></div>
+          <div class="orb-point p1"></div>
+          <div class="orb-point p2"></div>
+        </div>
+      </button>
+
+      <div class="splash-hint">BOSHLASH UCHUN TEGING</div>
+    </div>
+  </section>
+
+  <!-- 2. SETUP -->
+
+  <section class="screen" id="setup">
+    <div class="setup-card">
+      <div class="brand-mini">
+        <span class="brand-mini-dot"></span>
+        <span>AUNIVO SYSTEM</span>
+      </div>
+
+      <div class="eyebrow" style="text-align:center">BIRINCHI QADAM</div>
+      <h1 class="heading">Keling, <span class="gradient-text">tanishamiz.</span></h1>
+      <p class="description">
+        Sizga qanday murojaat qilishimni va yordamchingiz nomini tanlang.
+      </p>
+
+      <form id="setupForm">
+        <label class="form-field">
+          <span class="form-label">Ismingiz</span>
+          <input class="text-input" id="userName"
+            type="text" maxlength="30"
+            placeholder="Ismingizni kiriting" required>
+        </label>
+
+        <label class="form-field">
+          <span class="form-label">Yordamchi nomi</span>
+          <input class="text-input" id="assistantName"
+            type="text" maxlength="24"
+            value="Aunivo" required>
+        </label>
+
+        <div class="setup-actions button-stack">
+          <button class="primary-btn" type="submit">
+            Davom etish <span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- 3. GREETING -->
+
+  <section class="screen" id="greeting">
+    <div class="greeting-orb">
+      <div class="orb">
+        <div class="orb-halo"></div>
+        <div class="orb-core"></div>
+        <div class="orb-point p1"></div>
+        <div class="orb-point p2"></div>
+      </div>
+    </div>
+
+    <div class="eyebrow">ALOQA O‘RNATILDI</div>
+    <h1 class="heading">Yangi bosqich <span class="gradient-text">boshlanmoqda.</span></h1>
+    <div id="greetingMessage" class="greeting-message typing-cursor" aria-live="polite"></div>
+
+    <div class="greeting-actions button-stack">
+      <button class="primary-btn" id="greetingContinue" disabled>
+        Tanishganimdan xursandman <span class="btn-arrow">→</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- 4. FEATURES -->
+
+  <section class="screen" id="features">
+    <div class="feature-top">
+      <div class="eyebrow">AUNIVO SYSTEM</div>
+      <div class="feature-counter" id="featureCounter">01 / 09</div>
+    </div>
+
+    <div class="feature-progress">
+      <div class="feature-progress-fill" id="featureProgress"></div>
+    </div>
+
+    <div class="feature-visual" id="featureVisual">
+      <div class="orbit-point p1"></div>
+      <div class="orbit-point p2"></div>
+      <div class="feature-icon-shell" id="featureIcon"></div>
+    </div>
+
+    <div class="feature-copy" id="featureCopy">
+      <div class="eyebrow" id="featureEyebrow">MULOQOT</div>
+      <h1 class="heading" id="featureTitle"></h1>
+      <p class="description" id="featureDescription"></p>
+    </div>
+
+    <div class="feature-bottom">
+      <div class="button-stack">
+        <button class="primary-btn" id="featureNext">
+          Keyingi <span class="btn-arrow">→</span>
+        </button>
+
+        <button class="primary-btn hidden" id="featureFinish">
+          Yakunlash <span class="btn-arrow">→</span>
+        </button>
+
+        <button class="secondary-btn feature-replay hidden" id="featureReplay">
+          Imkoniyatlarni yana ko‘rish
+        </button>
+      </div>
+
+      <div style="text-align:center">
+        <button class="feature-skip" id="featureSkip">O‘tkazib yuborish</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. HOME -->
+
+  <section class="screen" id="home">
+    <header class="home-header">
+      <div class="home-brand-name" id="homeAssistantName">AUNIVO</div>
+      <div class="home-brand-subtitle">AI YORDAMCHI</div>
+      <div class="home-status" id="homeStatus">
+        <span class="status-dot"></span>
+        <span id="homeStatusText">TAYYOR</span>
+      </div>
+    </header>
+
+    <main class="home-center">
+      <button class="orb-button home-orb" id="homeOrb" aria-label="Ovozli muloqotni boshlash">
+        <div class="orb">
+          <div class="orb-halo"></div>
+          <div class="orb-core"></div>
+          <div class="orb-point p1"></div>
+          <div class="orb-point p2"></div>
+        </div>
+      </button>
+
+      <div class="home-greeting" id="homeGreeting">Sizni tinglashga tayyorman.</div>
+      <div class="home-instruction" id="homeInstruction">
+        Orbni bosing va ovozli muloqotni boshlang.
+      </div>
+      <div class="voice-state" id="voiceState">TINGLASH UCHUN BOSING</div>
+
+      <button class="home-chat-btn" id="openChat">
+        <span class="chat-glyph">▤</span>
+        <span>Yozuv orqali muloqot</span>
+        <span>→</span>
+      </button>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Asosiy navigatsiya">
+      <button class="nav-button" id="navFeatures" type="button">
+        <span class="nav-icon">◇</span>
+        <span class="nav-label">Imkoniyatlar</span>
+      </button>
+
+      <button class="nav-button center-nav" id="navHome" type="button">
+        <span class="nav-icon">✦</span>
+        <span class="nav-label">Aunivo</span>
+      </button>
+
+      <button class="nav-button" id="navSettings" type="button">
+        <span class="nav-icon">⚙</span>
+        <span class="nav-label">Sozlamalar</span>
+      </button>
+    </nav>
+  </section>
+
+  <!-- 6. TEXT CHAT -->
+
+  <section class="screen" id="chat">
+    <header class="chat-header">
+      <button class="back-btn" id="chatBack" type="button" aria-label="Orqaga">←</button>
+      <div>
+        <div class="chat-heading" id="chatAssistantName">Aunivo bilan muloqot</div>
+        <div class="chat-subheading">MATNLI MULOQOT</div>
+      </div>
+    </header>
+
+    <div class="chat-messages" id="chatMessages" aria-live="polite">
+      <div class="chat-message assistant">
+        Salom! Bu Aunivo’ning dastlabki matnli muloqot oynasi.
+      </div>
+    </div>
+
+    <form class="chat-form" id="chatForm">
+      <input class="chat-input" id="chatInput"
+        type="text" maxlength="500"
+        placeholder="Xabaringizni yozing..." required>
+      <button class="send-btn" type="submit" aria-label="Yuborish">↑</button>
+    </form>
+  </section>
+
+  <!-- 7. SETTINGS -->
+  <section class="screen" id="settings">
+    <div class="settings-wrap">
+      <header class="chat-header">
+        <button class="back-btn" id="settingsBack" type="button" aria-label="Orqaga">←</button>
+        <div>
+          <div class="chat-heading">Sozlamalar</div>
+          <div class="chat-subheading">AUNIVO SHAXSIYLASHTIRISH</div>
+        </div>
+      </header>
+      <h1 class="settings-title">Aunivo sozlamalari</h1>
+      <p class="settings-note">Ismingizni va yordamchi nomini o‘zgartiring. Ovozli funksiyalar brauzer hamda qurilma imkoniyatlariga bog‘liq.</p>
+
+      <form class="settings-card" id="settingsForm">
+        <label class="form-field">
+          <span class="form-label">Ismingiz</span>
+          <input class="text-input" id="settingsUserName" type="text" maxlength="30" required>
+        </label>
+        <label class="form-field">
+          <span class="form-label">Yordamchi nomi</span>
+          <input class="text-input" id="settingsAssistantName" type="text" maxlength="24" required>
+        </label>
+        <div class="button-stack">
+          <button class="primary-btn" type="submit">Saqlash <span class="btn-arrow">→</span></button>
+        </div>
+      </form>
+
+      <div class="settings-card">
+        <div class="form-label">Tekshiruv</div>
+        <div class="button-stack">
+          <button class="secondary-btn" id="testSpeech" type="button">Ovoz chiqarishni tekshirish</button>
+          <button class="secondary-btn" id="testAI" type="button">AI ulanishini tekshirish</button>
+        </div>
+      </div>
+
+      <div class="settings-card settings-danger">
+        <div class="form-label">Boshlang‘ich sozlamalar</div>
+        <p class="settings-note">Bu amal saqlangan ism va tanishuv holatini ushbu brauzerdan o‘chiradi.</p>
+        <button class="secondary-btn" id="resetApp" type="button">Sozlamalarni tiklash</button>
+      </div>
+      <button class="secondary-btn" id="settingsHome" type="button">Bosh sahifaga qaytish</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+"use strict";
+
+/* =====================================================
+   1. APPLICATION STATE AND PERSISTENCE
+   ===================================================== */
+
+const $ = selector => document.querySelector(selector);
+const screens = [...document.querySelectorAll(".screen")];
+const STORAGE_KEY = "aunivo_user_data_v2";
+
+const state = {
+  userName: "",
+  assistantName: "Aunivo",
+  currentScreen: "welcome",
+  featureIndex: 0,
+  onboardingComplete: false,
+  orbActive: false,
+  listening: false,
+  recognition: null,
+  audioContext: null,
+  toastTimer: null,
+  typingTimer: null,
+  navigationLock: false
+};
+
+function cleanName(value, fallback, max = 30) {
+  const result = String(value || "")
+    .replace(/[<>]/g, "")
+    .trim()
+    .slice(0, max);
+
+  return result || fallback;
+}
+
+function saveUserData() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      userName: state.userName,
+      assistantName: state.assistantName,
+      onboardingComplete: true
+    }));
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function loadUserData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+
+    const data = JSON.parse(raw);
+
+    if (
+      !data ||
+      data.onboardingComplete !== true ||
+      typeof data.userName !== "string" ||
+      typeof data.assistantName !== "string" ||
+      !data.userName.trim() ||
+      !data.assistantName.trim()
+    ) {
+      return false;
+    }
+
+    state.userName = cleanName(data.userName, "Do‘stim");
+    state.assistantName = cleanName(data.assistantName, "Aunivo", 24);
+    state.onboardingComplete = true;
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function updateNames() {
+  $("#homeAssistantName").textContent = state.assistantName.toUpperCase();
+  $("#chatAssistantName").textContent = state.assistantName + " bilan muloqot";
+  document.title = state.assistantName + " — AI Assistant";
+}
+
+/* =====================================================
+   2. AUDIO ENGINE — OFFLINE GENERATED SOUND EFFECTS
+   ===================================================== */
+
+function getAudioContext() {
+  try {
+    if (!state.audioContext) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return null;
+      state.audioContext = new AudioContextClass();
+    }
+
+    if (state.audioContext.state === "suspended") {
+      state.audioContext.resume();
+    }
+
+    return state.audioContext;
+  } catch (error) {
+    return null;
+  }
+}
+
+function tone(ctx, {
+  frequency = 440,
+  endFrequency = frequency,
+  start = 0,
+  duration = .18,
+  volume = .035,
+  type = "sine",
+  pan = 0
+} = {}) {
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+  const now = ctx.currentTime + start;
+
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, now);
+  oscillator.frequency.exponentialRampToValueAtTime(
+    Math.max(1, endFrequency), now + duration
+  );
+
+  gain.gain.setValueAtTime(.0001, now);
+  gain.gain.exponentialRampToValueAtTime(
+    Math.max(.0002, volume), now + Math.min(.035, duration * .25)
+  );
+  gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
+
+  oscillator.connect(gain);
+
+  if (panner) {
+    panner.pan.setValueAtTime(pan, now);
+    gain.connect(panner);
+    panner.connect(ctx.destination);
+  } else {
+    gain.connect(ctx.destination);
+  }
+
+  oscillator.start(now);
+  oscillator.stop(now + duration + .025);
+}
+
+function noiseSweep(ctx, start = 0, duration = .15, volume = .012) {
+  try {
+    const length = Math.max(1, Math.floor(ctx.sampleRate * duration));
+    const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < length; i++) {
+      data[i] = (Math.random() * 2 - 1) * (1 - i / length);
+    }
+
+    const source = ctx.createBufferSource();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    const now = ctx.currentTime + start;
+
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(1500, now);
+    filter.frequency.exponentialRampToValueAtTime(400, now + duration);
+
+    gain.gain.setValueAtTime(.0001, now);
+    gain.gain.exponentialRampToValueAtTime(volume, now + .025);
+    gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
+
+    source.buffer = buffer;
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    source.start(now);
+    source.stop(now + duration + .02);
+  } catch (error) {}
+}
+
+function playSound(name = "tap") {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const sounds = {
+    tap() {
+      tone(ctx, {
+        frequency: 650, endFrequency: 840,
+        duration: .09, volume: .025
+      });
+    },
+
+    intro() {
+      noiseSweep(ctx, 0, .30, .009);
+      tone(ctx, { frequency: 220, endFrequency: 440, duration: .50, volume: .026 });
+      tone(ctx, { frequency: 440, endFrequency: 660, start: .13, duration: .42, volume: .028 });
+      tone(ctx, { frequency: 660, endFrequency: 880, start: .26, duration: .40, volume: .024 });
+    },
+
+    transition() {
+      tone(ctx, { frequency: 390, endFrequency: 520, duration: .12, volume: .022 });
+      tone(ctx, { frequency: 580, endFrequency: 720, start: .07, duration: .16, volume: .018 });
+    },
+
+    voice() {
+      tone(ctx, { frequency: 230, endFrequency: 340, duration: .22, volume: .032 });
+      tone(ctx, { frequency: 460, endFrequency: 690, start: .09, duration: .24, volume: .025 });
+      noiseSweep(ctx, .02, .16, .006);
+    },
+
+    listening() {
+      tone(ctx, { frequency: 520, endFrequency: 700, duration: .12, volume: .025 });
+      tone(ctx, { frequency: 780, endFrequency: 620, start: .12, duration: .17, volume: .018 });
+    },
+
+    finish() {
+      tone(ctx, { frequency: 392, duration: .24, volume: .025 });
+      tone(ctx, { frequency: 523, start: .12, duration: .26, volume: .026 });
+      tone(ctx, { frequency: 659, start: .24, duration: .28, volume: .027 });
+      tone(ctx, { frequency: 784, start: .36, duration: .42, volume: .03 });
+    },
+
+    message() {
+      tone(ctx, { frequency: 600, endFrequency: 500, duration: .10, volume: .018 });
+    },
+
+    error() {
+      tone(ctx, { frequency: 280, endFrequency: 180, duration: .18, volume: .025, type: "triangle" });
+    }
+  };
+
+  try {
+    if (sounds[name]) sounds[name]();
+  } catch (error) {}
+}
+
+/* Ovozli asosiy tugmalar o‘z effektiga ega.
+   Qolgan tugmalarga umumiy bosilish tovushi beriladi. */
+document.addEventListener("click", event => {
+  const button = event.target.closest("button");
+  if (!button || button.disabled) return;
+
+  if (["splashOrb", "homeOrb"].includes(button.id)) return;
+  if (button.dataset.noSound === "true") return;
+
+  playSound("tap");
+});
+
+/* =====================================================
+   3. TOAST
+   ===================================================== */
+
+function showToast(message, duration = 2200) {
+  const toast = $("#toast");
+  toast.textContent = message;
+  toast.classList.add("visible");
+
+  clearTimeout(state.toastTimer);
+  state.toastTimer = setTimeout(() => {
+    toast.classList.remove("visible");
+  }, duration);
+}
+
+/* =====================================================
+   4. SCREEN ROUTING AND ANDROID BACK
+   ===================================================== */
+
+const screenOrder = ["welcome", "setup", "greeting", "features", "home"];
+
+function displayScreen(id, animate = true) {
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  screens.forEach(screen => {
+    screen.classList.remove("active", "entering");
+  });
+
+  target.classList.add("active");
+  state.currentScreen = id;
+
+  if (animate) {
+    requestAnimationFrame(() => target.classList.add("entering"));
+  }
+
+  if (id === "chat") {
+    setTimeout(() => {
+      try {
+        $("#chatInput").focus({ preventScroll: true });
+      } catch (error) {}
+    }, 250);
+    scrollChatToBottom();
+  }
+}
+
+function goTo(id, options = {}) {
+  const { pushHistory = true, sound = false } = options;
+
+  // Do not leave the microphone running after the user leaves the voice screen.
+  if (id !== "home" && state.orbActive) stopVoiceSession();
+  if (sound) playSound("transition");
+
+  if (pushHistory && state.currentScreen !== id) {
+    try {
+      history.pushState({ aunivoScreen: id }, "", location.href);
+    } catch (error) {}
+  }
+
+  displayScreen(id);
+}
+
+function previousScreen() {
+  switch (state.currentScreen) {
+    case "features":
+      if (state.featureIndex > 0) {
+        state.featureIndex--;
+        renderFeature();
+      } else {
+        goTo("greeting", { sound: true });
+      }
+      return;
+
+    case "greeting":
+      clearTimeout(state.typingTimer);
+      goTo("setup", { sound: true });
+      return;
+
+    case "setup":
+      goTo("welcome", { sound: true });
+      return;
+
+    case "chat":
+      goTo("home", { sound: true });
+      return;
+
+    case "home":
+    case "welcome":
+    default:
+      return;
+  }
+}
+
+/*
+ Android WebView / brauzer orqaga buyrug‘i:
+ har bir ichki bosqichga tarix yozuvi qo‘shiladi.
+ popstate hodisasi bosqichni orqaga qaytaradi.
+*/
+try {
+  history.replaceState({ aunivoScreen: state.currentScreen }, "", location.href);
+  history.pushState({ aunivoScreen: state.currentScreen }, "", location.href);
+} catch (error) {}
+
+window.addEventListener("popstate", () => {
+  if (state.currentScreen === "home" || state.currentScreen === "welcome") {
+    try {
+      history.pushState({ aunivoScreen: state.currentScreen }, "", location.href);
+    } catch (error) {}
+    return;
+  }
+
+  previousScreen();
+
+  try {
+    history.pushState({ aunivoScreen: state.currentScreen }, "", location.href);
+  } catch (error) {}
+});
+
+/* =====================================================
+   5. FIRST RUN AND SETUP
+   ===================================================== */
+
+$("#splashOrb").addEventListener("click", () => {
+  playSound("intro");
+  goTo("setup");
+});
+
+$("#setupForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  state.userName = cleanName($("#userName").value, "Do‘stim");
+  state.assistantName = cleanName($("#assistantName").value, "Aunivo", 24);
+
+  updateNames();
+  playSound("transition");
+  startGreeting();
+});
+
+/* =====================================================
+   6. GREETING TEXT ANIMATION
+   ===================================================== */
+
+function typeGreeting(element, text, speed = 28) {
+  clearTimeout(state.typingTimer);
+  element.textContent = "";
+  element.classList.add("typing-cursor");
+  $("#greetingContinue").disabled = true;
+
+  let index = 0;
+
+  function writeNext() {
+    if (index >= text.length) {
+      element.classList.remove("typing-cursor");
+      $("#greetingContinue").disabled = false;
+      return;
+    }
+
+    element.textContent += text.charAt(index);
+    const character = text.charAt(index);
+    index++;
+
+    const delay = (character === "." || character === "!") ? 180 : speed;
+    state.typingTimer = setTimeout(writeNext, delay);
+  }
+
+  writeNext();
+}
+
+function startGreeting() {
+  goTo("greeting");
+
+  const message =
+    "Assalomu alaykum, " + state.userName +
+    "! Men " + state.assistantName +
+    " bo‘laman. Sizga telefoningizdan foydalanishda yordam berishga mo‘ljallangan shaxsiy yordamchingizman.";
+
+  setTimeout(() => {
+    typeGreeting($("#greetingMessage"), message);
+  }, 300);
+}
+
+$("#greetingContinue").addEventListener("click", () => {
+  state.featureIndex = 0;
+  renderFeature();
+  goTo("features", { sound: true });
+});
+
+/* =====================================================
+   7. FEATURE ICONS — ORIGINAL SVG ICONS
+   ===================================================== */
+
+const icons = {
+  voice: `
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="18" y="7" width="12" height="22" rx="6"/>
+      <path d="M12 23v2a12 12 0 0 0 24 0v-2"/>
+      <path d="M24 37v5M18 42h12"/>
+      <path d="M8 15v8M40 15v8" opacity=".55"/>
+      <circle cx="24" cy="18" r="2" fill="currentColor" stroke="none"/>
+    </svg>`,
+
+  phone: `
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="13" y="5" width="22" height="38" rx="5"/>
+      <path d="M20 10h8"/>
+      <path d="M20 35h8"/>
+      <path d="M19 20l4 4 7-8"/>
+      <circle cx="34" cy="12" r="4" fill="#8bdcff" stroke="none"/>
+    </svg>`,
+
+  plan: `
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="7" y="10" width="34" height="31" rx="5"/>
+      <path d="M15 6v8M33 6v8M7 19h34"/>
+      <path d="M14 26l3 3 5-6M27 27h7M27 34h7"/>
+      <circle cx="35" cy="12" r="5" fill="#9b8cff" stroke="none"/>
+    </svg>`,
+
+  notes: `
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M13 6h17l7 7v29H13z"/>
+      <path d="M30 6v8h7"/>
+      <path d="M19 22h12M19 28h12M19 34h8"/>
+      <path d="M8 12v30h23" opacity=".4"/>
+    </svg>`,
+
+  work: `
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="6" y="14" width="36" height="27" rx="5"/>
+      <path d="M17 14V9a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v5"/>
+      <path d="M6 25h36M20 25v4h8v-4"/>
+      <circle cx="36" cy="10" r="5" fill="#9d8aff" stroke="none"/>
+    </svg>`,
+
+  search: `
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="21" cy="21" r="13"/>
+      <path d="M31 31l10 10"/>
+      <path d="M15 21h12M21 15v12" opacity=".7"/>
+      <circle cx="35" cy="11" r="4" fill="#8cddff" stroke="none"/>
+    </svg>`,
+
+  ai: `
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M24 5l4.8 12.2L41 22l-12.2 4.8L24 39l-4.8-12.2L7 22l12.2-4.8z"/>
+      <path d="M37 29l2.5 6.5L46 38l-6.5 2.5L37 47l-2.5-6.5L28 38l6.5-2.5z" transform="translate(-2 -3) scale(.8)"/>
+      <circle cx="12" cy="10" r="2" fill="#8ddfff" stroke="none"/>
+    </svg>`,
+
+  image: `
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="8" width="38" height="32" rx="5"/>
+      <circle cx="17" cy="18" r="4"/>
+      <path d="M7 34l11-10 8 7 6-6 9 9"/>
+      <path d="M34 8v8M30 12h8" opacity=".7"/>
+    </svg>`,
+
+  memory: `
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M24 5l15 6v11c0 10-6 16-15 21C15 38 9 32 9 22V11z"/>
+      <path d="M17 24l5 5 10-11"/>
+      <circle cx="36" cy="10" r="4" fill="#91dfff" stroke="none"/>
+    </svg>`
+};
+
+const featureList = [
+  {
+    eyebrow: "01 / OVOZLI MULOQOT",
+    title: "Ovoz orqali muloqot",
+    description: "Orbni bosib, ovozli muloqotni boshlang. Mikrofon imkoniyatlari brauzer va qurilmaga bog‘liq.",
+    icon: "voice"
+  },
+  {
+    eyebrow: "02 / TELEFON",
+    title: "Telefon bilan ishlash",
+    description: "Kelajakda Aunivo’ni telefon funksiyalariga bog‘lab, ayrim amallarni ovozli buyruqlar bilan bajarish imkoniyati qo‘shiladi.",
+    icon: "phone"
+  },
+  {
+    eyebrow: "03 / REJALASHTIRISH",
+    title: "Kuningizni rejalashtiring",
+    description: "Kundalik vazifalar, rejalar va maqsadlarni tartibga solishga mo‘ljallangan shaxsiy rejalashtirish bo‘limi.",
+    icon: "plan"
+  },
+  {
+    eyebrow: "04 / QAYDLAR",
+    title: "Muhim fikrlarni saqlang",
+    description: "Fikrlar, qaydlar va eslab qolish kerak bo‘lgan vazifalarni bir joyda jamlash imkoniyati.",
+    icon: "notes"
+  },
+  {
+    eyebrow: "05 / ISH KUNI",
+    title: "Ish jarayonida yordam",
+    description: "Ish jadvali, vazifalar va tanaffuslarni rejalashtirishga mo‘ljallangan yordamchi imkoniyatlar.",
+    icon: "work"
+  },
+  {
+    eyebrow: "06 / INTERNET QIDIRUVI",
+    title: "Kerakli ma’lumotni toping",
+    description: "Internetga ulash orqali dolzarb ma’lumotlarni izlash va natijalarni tushunarli shaklda ko‘rsatish imkoniyati.",
+    icon: "search"
+  },
+  {
+    eyebrow: "07 / SUN’IY INTELLEKT",
+    title: "Aqlli suhbat",
+    description: "AI xizmatini ulash orqali savollarga javob berish, fikrlarni tahlil qilish va murakkab mavzularni tushuntirish imkoniyati.",
+    icon: "ai"
+  },
+  {
+    eyebrow: "08 / TASVIR TAHLILI",
+    title: "Rasmlar bilan ishlash",
+    description: "Tasvirlarni tahlil qilish va ulardagi ma’lumotlarni tushuntirish uchun alohida imkoniyatlar qo‘shiladi.",
+    icon: "image"
+  },
+  {
+    eyebrow: "09 / SHAXSIY YORDAMCHI",
+    title: "Sizga moslashadigan Aunivo",
+    description: "Shaxsiy afzalliklar va xotira tizimi yordamida yordamchini o‘zingizga moslashtirish imkoniyatlari keyingi bosqichlarda yaratiladi.",
+    icon: "memory"
+  }
+];
+
+/* =====================================================
+   8. FEATURES RENDERER
+   ===================================================== */
+
+function renderFeature() {
+  const index = state.featureIndex;
+  const item = featureList[index];
+  const last = index === featureList.length - 1;
+
+  $("#featureCounter").textContent =
+    String(index + 1).padStart(2, "0") + " / " +
+    String(featureList.length).padStart(2, "0");
+
+  $("#featureProgress").style.width =
+    ((index + 1) / featureList.length * 100) + "%";
+
+  $("#featureEyebrow").textContent = item.eyebrow;
+  $("#featureTitle").textContent = item.title;
+  $("#featureDescription").textContent = item.description;
+  $("#featureIcon").innerHTML = icons[item.icon];
+
+  $("#featureNext").classList.toggle("hidden", last);
+  $("#featureFinish").classList.toggle("hidden", !last);
+  $("#featureReplay").classList.toggle("hidden", !last);
+
+  $("#featureSkip").classList.toggle("hidden", last);
+
+  const copy = $("#featureCopy");
+  copy.style.animation = "none";
+  void copy.offsetWidth;
+  copy.style.animation = "featureCopyIn .5s cubic-bezier(.22,1,.36,1) both";
+
+  const visual = $("#featureVisual");
+  visual.style.animation = "none";
+  void visual.offsetWidth;
+  visual.style.animation = "contentIn .6s cubic-bezier(.22,1,.36,1) both";
+}
+
+function nextFeature() {
+  if (state.featureIndex < featureList.length - 1) {
+    state.featureIndex++;
+    playSound("transition");
+    renderFeature();
+  }
+}
+
+$("#featureNext").addEventListener("click", nextFeature);
+
+$("#featureSkip").addEventListener("click", () => {
+  finishOnboarding();
+});
+
+$("#featureFinish").addEventListener("click", () => {
+  finishOnboarding();
+});
+
+$("#featureReplay").addEventListener("click", () => {
+  state.featureIndex = 0;
+  playSound("intro");
+  renderFeature();
+});
+
+function finishOnboarding() {
+  state.onboardingComplete = true;
+  saveUserData();
+  updateNames();
+  playSound("finish");
+  goTo("home");
+}
+
+/* =====================================================
+   9. NAVIGATION BUTTONS
+   ===================================================== */
+
+$("#navFeatures").addEventListener("click", () => {
+  state.featureIndex = 0;
+  renderFeature();
+  goTo("features", { sound: true });
+});
+
+$("#navHome").addEventListener("click", () => {
+  goTo("home", { sound: true });
+});
+
+$("#navSettings").addEventListener("click", () => {
+  $("#settingsUserName").value = state.userName;
+  $("#settingsAssistantName").value = state.assistantName;
+  goTo("settings", { sound: true });
+});
+
+$("#settingsBack").addEventListener("click", () => goTo("home", { sound: true }));
+$("#settingsHome").addEventListener("click", () => goTo("home", { sound: true }));
+
+$("#settingsForm").addEventListener("submit", event => {
+  event.preventDefault();
+  state.userName = cleanName($("#settingsUserName").value, "Do‘stim");
+  state.assistantName = cleanName($("#settingsAssistantName").value, "Aunivo", 24);
+  updateNames();
+  const saved = saveUserData();
+  showToast(saved ? "Sozlamalar saqlandi." : "Saqlash imkoni bo‘lmadi. Brauzer xotirasini tekshiring.");
+});
+
+$("#testSpeech").addEventListener("click", () => {
+  if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+    showToast("Bu brauzer ovoz chiqarishni qo‘llab-quvvatlamaydi.");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance("Assalomu alaykum. Men Aunivoman.");
+  utterance.lang = "uz-UZ";
+  utterance.onerror = () => showToast("O‘zbekcha ovoz topilmadi. Qurilma ovoz sozlamalarini tekshiring.");
+  window.speechSynthesis.speak(utterance);
+});
+
+$("#testAI").addEventListener("click", async event => {
+  const button = event.currentTarget;
+  if (button.disabled) return;
+  button.disabled = true;
+  button.textContent = "Tekshirilmoqda...";
+  try {
+    const answer = await requestAI("Faqat: Aunivo AI aloqasi ishlayapti, deb javob ber.");
+    showToast("AI javob berdi: " + answer.slice(0, 110), 3500);
+  } catch (error) {
+    showToast(error.message || "AI serveriga ulanib bo‘lmadi.", 3500);
+  } finally {
+    button.disabled = false;
+    button.textContent = "AI ulanishini tekshirish";
+  }
+});
+
+$("#resetApp").addEventListener("click", () => {
+  const confirmed = window.confirm("Saqlangan ism va tanishuv holatini o‘chirib, Aunivo’ni boshidan boshlaysizmi?");
+  if (!confirmed) return;
+  stopVoiceSession();
+  try { localStorage.removeItem(STORAGE_KEY); } catch (error) {}
+  state.userName = "";
+  state.assistantName = "Aunivo";
+  state.onboardingComplete = false;
+  updateNames();
+  goTo("welcome", { sound: true });
+});
+
+/* =====================================================
+   10. VOICE INTERACTION
+   ===================================================== */
+
+function setOrbActive(active) {
+  state.orbActive = active;
+  $("#homeOrb").classList.toggle("active", active);
+}
+
+function setListening(active) {
+  state.listening = active;
+  $("#homeOrb").classList.toggle("listening", active);
+  $("#homeStatus").classList.toggle("ready", active);
+
+  $("#homeStatusText").textContent = state.orbActive ? "FAOL" : "TAYYOR";
+  // Recognition can end briefly while AI is processing or speaking.
+  // Keep the current transcript/answer visible instead of flashing the idle label.
+  if (active) {
+    $("#voiceState").textContent = "TINGLAYAPMAN...";
+  } else if (!state.orbActive) {
+    $("#voiceState").textContent = "TINGLASH UCHUN BOSING";
+  }
+
+  $("#homeInstruction").textContent = state.orbActive
+    ? "Gapiring. Tinglashni to‘xtatish uchun orbni yana bosing."
+    : "Orbni bosing va ovozli muloqotni boshlang.";
+}
+
+function stopRecognition() {
+  try {
+    if (state.recognition) state.recognition.stop();
+  } catch (error) {}
+
+  state.recognition = null;
+  setListening(false);
+}
+
+let voiceBusy = false;
+let voiceRestartTimer = null;
+let voiceSilenceTimer = null;
+let voicePendingText = "";
+let voiceSessionId = 0;
+let voiceHasHeardSpeech = false;
+
+async function requestAI(message) {
+  if (!navigator.onLine) throw new Error("Internet aloqasi yo‘q.");
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
+  try {
+    const response = await fetch("https://aunivo-server.onrender.com/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ message, userName: state.userName, assistantName: state.assistantName }),
+      signal: controller.signal
+    });
+    const raw = await response.text();
+    let data;
+    try { data = raw ? JSON.parse(raw) : {}; }
+    catch (error) { throw new Error("AI serveri JSON formatida javob bermadi."); }
+    if (!response.ok) {
+      throw new Error(data.error || data.message || ("AI server xatosi (" + response.status + ")"));
+    }
+    const answer =
+      data.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("").trim() ||
+      data.answer || data.reply || data.response || data.text || "";
+    if (typeof answer !== "string" || !answer.trim()) {
+      throw new Error("AI javobi bo‘sh yoki server javob formati mos emas.");
+    }
+    return answer.trim();
+  } catch (error) {
+    if (error.name === "AbortError") throw new Error("AI serveri 25 soniyada javob bermadi. Birozdan keyin urinib ko‘ring.");
+    if (error instanceof TypeError) throw new Error("AI serveriga ulanib bo‘lmadi. Internet yoki server/CORS sozlamasini tekshiring.");
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+function resetVoiceSilencePrompt(sessionId) {
+  clearTimeout(voiceSilenceTimer);
+  voiceSilenceTimer = setTimeout(() => {
+    if (!state.orbActive || voiceBusy || sessionId !== voiceSessionId || voiceHasHeardSpeech) return;
+    const oldRecognition = state.recognition;
+    state.recognition = null;
+    try { if (oldRecognition) oldRecognition.stop(); } catch (error) {}
+    setListening(false);
+    if ("speechSynthesis" in window && "SpeechSynthesisUtterance" in window) {
+      window.speechSynthesis.cancel();
+      const prompt = new SpeechSynthesisUtterance("Sizni yaxshi eshitmayapman. Iltimos, gapiring.");
+      prompt.lang = "uz-UZ";
+      prompt.onend = () => {
+        if (sessionId === voiceSessionId && state.orbActive && !voiceBusy) {
+          voiceRestartTimer = setTimeout(startVoiceRecognition, 350);
+        }
+      };
+      prompt.onerror = () => {
+        if (sessionId === voiceSessionId && state.orbActive && !voiceBusy) {
+          voiceRestartTimer = setTimeout(startVoiceRecognition, 350);
+        }
+      };
+      window.speechSynthesis.speak(prompt);
+    } else {
+      voiceRestartTimer = setTimeout(startVoiceRecognition, 350);
+    }
+  }, 7000);
+}
+
+async function sendVoiceToAI(message, sessionId) {
+  const transcript = (message || "").trim();
+  if (!transcript || voiceBusy || !state.orbActive || sessionId !== voiceSessionId) return;
+  voiceBusy = true;
+  voiceHasHeardSpeech = true;
+  voicePendingText = "";
+  clearTimeout(voiceSilenceTimer);
+  clearTimeout(voiceRestartTimer);
+  if (state.recognition) {
+    const oldRecognition = state.recognition;
+    state.recognition = null;
+    try { oldRecognition.stop(); } catch (error) {}
+  }
+  setListening(false);
+  $("#voiceState").textContent = "JAVOB TAYYORLANMOQDA...";
+  try {
+    const answer = await requestAI(transcript);
+    if (!state.orbActive || sessionId !== voiceSessionId) return;
+    $("#voiceState").textContent = answer;
+    if ("speechSynthesis" in window && "SpeechSynthesisUtterance" in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(answer);
+      utterance.lang = "uz-UZ";
+      utterance.onend = () => {
+        if (sessionId !== voiceSessionId) return;
+        voiceBusy = false;
+        voiceHasHeardSpeech = false;
+        if (state.orbActive) {
+          $("#voiceState").textContent = "TINGLAYAPMAN...";
+          resetVoiceSilencePrompt(sessionId);
+          voiceRestartTimer = setTimeout(startVoiceRecognition, 500);
+        }
+      };
+      utterance.onerror = () => {
+        if (sessionId !== voiceSessionId) return;
+        voiceBusy = false;
+        voiceHasHeardSpeech = false;
+        if (state.orbActive) {
+          resetVoiceSilencePrompt(sessionId);
+          voiceRestartTimer = setTimeout(startVoiceRecognition, 500);
+        }
+      };
+      window.speechSynthesis.speak(utterance);
+    } else {
+      voiceBusy = false;
+      voiceHasHeardSpeech = false;
+      if (state.orbActive) {
+        resetVoiceSilencePrompt(sessionId);
+        voiceRestartTimer = setTimeout(startVoiceRecognition, 700);
+      }
+    }
+  } catch (error) {
+    if (sessionId !== voiceSessionId) return;
+    voiceBusy = false;
+    voiceHasHeardSpeech = false;
+    $("#voiceState").textContent = "AI JAVOB BERMADI";
+    showToast("AI bilan ulanishda xato. Internetni tekshiring.");
+    if (state.orbActive) voiceRestartTimer = setTimeout(startVoiceRecognition, 1200);
+  }
+}
+
+// Android APK uchun mahalliy SpeechRecognizer ko‘prigi.
+window.AunivoNativeStarted = function () {
+  if (!state.orbActive) return;
+  setListening(true);
+  if (!voiceBusy) $("#voiceState").textContent = "TINGLAYAPMAN...";
+};
+window.AunivoNativeResult = function (text) {
+  if (!state.orbActive || voiceBusy) return;
+  clearTimeout(voiceSilenceTimer);
+  sendVoiceToAI(String(text || ""), voiceSessionId);
+};
+window.AunivoNativeError = function (code) {
+  state.recognition = null;
+  setListening(false);
+  if (!state.orbActive) return;
+  if (code === "not-allowed") {
+    setOrbActive(false);
+    showToast("Mikrofon ruxsati berilmadi. Android sozlamalarini tekshiring.");
+    return;
+  }
+  if (code === "unavailable") {
+    setOrbActive(false);
+    showToast("Telefonda ovoz tanish xizmati mavjud emas.");
+    return;
+  }
+  showToast("Ovozni aniqlay olmadim. Qayta urinib ko‘ring.");
+  clearTimeout(voiceRestartTimer);
+  voiceRestartTimer = setTimeout(startVoiceRecognition, 900);
+};
+
+function startVoiceRecognition() {
+  if (!state.orbActive || state.recognition || voiceBusy) return;
+  const sessionId = voiceSessionId;
+  // APK ichida brauzer Web Speech API o‘rniga Android tizimining nutq tanishidan foydalanamiz.
+  if (window.AunivoAndroid && typeof window.AunivoAndroid.startListening === "function") {
+    try {
+      state.recognition = { stop: () => window.AunivoAndroid.stopListening() };
+      setListening(true);
+      if (!voiceHasHeardSpeech) resetVoiceSilencePrompt(sessionId);
+      window.AunivoAndroid.startListening();
+    } catch (error) {
+      state.recognition = null;
+      setListening(false);
+      showToast("Android ovozli xizmatini ishga tushirib bo‘lmadi.");
+    }
+    return;
+  }
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    setListening(false);
+    setOrbActive(false);
+    showToast("Bu brauzer ovozli tanishni qo‘llab-quvvatlamaydi.");
+    return;
+  }
+  voicePendingText = "";
+  try {
+    const recognition = new SpeechRecognition();
+    state.recognition = recognition;
+    recognition.lang = "uz-UZ";
+    // Faqat yakunlangan gapni olamiz: oraliq natijalar ekranni tinimsiz yangilamasin.
+    recognition.interimResults = false;
+    recognition.continuous = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      if (sessionId !== voiceSessionId) return;
+      setListening(true);
+      if (!voiceBusy) $("#voiceState").textContent = "TINGLAYAPMAN...";
+      if (!voiceHasHeardSpeech) resetVoiceSilencePrompt(sessionId);
+    };
+
+    recognition.onresult = event => {
+      if (sessionId !== voiceSessionId || voiceBusy) return;
+      let transcript = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) transcript += " " + event.results[i][0].transcript;
+      }
+      transcript = transcript.trim();
+      if (!transcript) return;
+      // Set busy synchronously so onend cannot send the same phrase a second time.
+      voicePendingText = "";
+      clearTimeout(voiceSilenceTimer);
+      sendVoiceToAI(transcript, sessionId);
+    };
+
+    recognition.onerror = event => {
+      if (sessionId !== voiceSessionId) return;
+      if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+        setOrbActive(false);
+        setListening(false);
+        showToast("Mikrofon ruxsatini brauzer sozlamalaridan tekshiring.");
+      } else if (event.error === "network") {
+        showToast("Ovozli tanish xizmati tarmog‘ida xato.");
+      }
+    };
+
+    recognition.onend = () => {
+      if (sessionId !== voiceSessionId) return;
+      if (state.recognition === recognition) state.recognition = null;
+      // Do not submit here: onresult submits only the final transcript once.
+      if (!voiceBusy && state.orbActive) {
+        clearTimeout(voiceRestartTimer);
+        voiceRestartTimer = setTimeout(startVoiceRecognition, 350);
+      }
+    };
+    recognition.start();
+  } catch (error) {
+    state.recognition = null;
+    setListening(false);
+    showToast("Ovozli muloqotni boshlashning imkoni bo‘lmadi.");
+  }
+}
+
+function stopVoiceSession() {
+  voiceSessionId++;
+  state.orbActive = false;
+  voiceBusy = false;
+  voicePendingText = "";
+  voiceHasHeardSpeech = false;
+  clearTimeout(voiceRestartTimer);
+  clearTimeout(voiceSilenceTimer);
+  try { if (state.recognition) state.recognition.stop(); } catch (error) {}
+  state.recognition = null;
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  setListening(false);
+  setOrbActive(false);
+  $("#voiceState").textContent = "TINGLASH UCHUN BOSING";
+}
+
+function toggleVoice() {
+  playSound("voice");
+  if (state.orbActive) {
+    stopVoiceSession();
+    return;
+  }
+  voiceSessionId++;
+  voiceHasHeardSpeech = false;
+  setOrbActive(true);
+  $("#voiceState").textContent = "TINGLAYAPMAN...";
+  resetVoiceSilencePrompt(voiceSessionId);
+  startVoiceRecognition();
+}
+
+$("#homeOrb").addEventListener("click", toggleVoice);
+
+/* =====================================================
+   11. TEXT CHAT
+   ===================================================== */
+
+$("#openChat").addEventListener("click", () => {
+  goTo("chat", { sound: true });
+});
+
+$("#chatBack").addEventListener("click", () => {
+  goTo("home", { sound: true });
+});
+
+function scrollChatToBottom() {
+  requestAnimationFrame(() => {
+    const box = $("#chatMessages");
+    box.scrollTop = box.scrollHeight;
+  });
+}
+
+function addChatMessage(text, role) {
+  const element = document.createElement("div");
+  element.className = "chat-message " + role;
+  element.textContent = text;
+  $("#chatMessages").appendChild(element);
+  scrollChatToBottom();
+}
+
+function localReply(text) {
+  const message = text.toLocaleLowerCase("uz-UZ");
+
+  if (/\b(salom|assalomu alaykum)\b/.test(message)) {
+    return "Va alaykum assalom, " + state.userName + "! Sizga qanday yordam kerak?";
+  }
+
+  if (message.includes("isming") || message.includes("kimsan")) {
+    return "Mening ismim " + state.assistantName + ".";
+  }
+
+  if (message.includes("soat") || message.includes("vaqt")) {
+    return "Qurilmangizdagi vaqt: " +
+      new Date().toLocaleTimeString("uz-UZ", {
+        hour: "2-digit", minute: "2-digit"
+      }) + ".";
+  }
+
+  if (message.includes("sana") || message.includes("bugun")) {
+    return "Qurilmangizdagi sana: " +
+      new Date().toLocaleDateString("uz-UZ", {
+        year: "numeric", month: "long", day: "numeric"
+      }) + ".";
+  }
+
+  if (message.includes("rahmat")) {
+    return "Arzimaydi! Aunivo’ni birgalikda rivojlantiramiz.";
+  }
+
+  if (message.includes("yordam")) {
+    return "Hozircha salomlashish, ismimni aytish va sana-vaqtni ko‘rsatish kabi oddiy buyruqlarni taniyman.";
+  }
+
+  return "Xabaringizni oldim. Hozircha haqiqiy AI xizmatiga ulanmaganman. Keyingi bosqichda AI xizmatini ulashimiz mumkin.";
+}
+
+$("#chatForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const input = $("#chatInput");
+  const message = input.value.trim();
+  if (!message) return;
+
+  addChatMessage(message, "user");
+  input.value = "";
+  input.disabled = true;
+  $("#chatForm button[type=submit]").disabled = true;
+  const waiting = document.createElement("div");
+  waiting.className = "chat-message assistant";
+  waiting.textContent = "Javob tayyorlanmoqda...";
+  waiting.setAttribute("aria-live", "polite");
+  $("#chatMessages").appendChild(waiting);
+  scrollChatToBottom();
+  playSound("message");
+
+  try {
+    const answer = await requestAI(message);
+    waiting.textContent = answer;
+  } catch (error) {
+    waiting.textContent = error.message || "AI bilan ulanishda xato. Birozdan keyin qayta urin.";
+  } finally {
+    input.disabled = false;
+    $("#chatForm button[type=submit]").disabled = false;
+    input.focus({ preventScroll: true });
+    scrollChatToBottom();
+    playSound("message");
+  }
+});
+
+window.addEventListener("offline", () => showToast("Internet aloqasi uzildi. AI javoblari ishlamasligi mumkin."));
+window.addEventListener("online", () => showToast("Internet aloqasi tiklandi."));
+
+/* =====================================================
+   12. STARTUP
+   ===================================================== */
+
+renderFeature();
+
+if (loadUserData()) {
+  updateNames();
+  displayScreen("home", false);
+} else {
+  displayScreen("welcome", false);
+}
+</script>
+</body>
+</html>
