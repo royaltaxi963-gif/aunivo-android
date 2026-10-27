@@ -2466,7 +2466,9 @@ utterance.rate = 1;
           voiceRestartTimer = setTimeout(startVoiceRecognition, 500);
         }
       };
-      window.speechSynthesis.speak(utterance);
+      utterance.volume = 1;
+window.speechSynthesis.cancel();
+window.speechSynthesis.speak(utterance);
     } else {
       voiceBusy = false;
       voiceHasHeardSpeech = false;
