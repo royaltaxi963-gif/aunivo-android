@@ -2443,8 +2443,10 @@ async function sendVoiceToAI(message, sessionId) {
     $("#voiceState").textContent = answer;
     if ("speechSynthesis" in window && "SpeechSynthesisUtterance" in window) {
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(answer);
-      utterance.lang = "uz-UZ";
+      const utterance = new SpeechSynthesisUtterance(String(answer || ""));
+utterance.lang = "uz-UZ";
+utterance.rate = 1;
+      
       utterance.onend = () => {
         if (sessionId !== voiceSessionId) return;
         voiceBusy = false;
